@@ -1,7 +1,6 @@
 package cz.osu.mydemo.firstapp.user.controllers;
 
 import cz.osu.mydemo.firstapp.user.Address;
-import cz.osu.mydemo.firstapp.user.AddressRepository;
 import cz.osu.mydemo.firstapp.user.User;
 import cz.osu.mydemo.firstapp.user.UserRepository;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,11 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/v1/user")
 public class UserController {
     private final UserRepository userRepository;
-    private final AddressRepository addressRepository;
 
-    public UserController(UserRepository userRepository, AddressRepository addressRepository) {
+    public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.addressRepository = addressRepository;
     }
 
     @GetMapping("/hello")
@@ -49,7 +46,16 @@ public class UserController {
         address.setState("Moravian-Silesian Region");
         address.setPostalCode("702 00");
         address.setCountry("Czech Republic");
-        user.setAddress(addressRepository.save(address));
+
+        Address secondAddress = new Address();
+        secondAddress.setStreet("456 Oak Avenue");
+        secondAddress.setCity("Prague");
+        secondAddress.setState("Prague");
+        secondAddress.setPostalCode("110 00");
+        secondAddress.setCountry("Czech Republic");
+
+        user.addAddress(address);
+        user.addAddress(secondAddress);
 
         return userRepository.save(user);
     }
